@@ -1,11 +1,11 @@
 ---
-title: "Proposal title"
+title: "US Weekly Gas Price Volatility"
 subtitle: "Proposal"
 author: 
   - name: "Elizabeth Ladd"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: "This project will look at a dataset containing weekly gas prices in the U.S. to determin how common sudden price increases are and if there is a difference between regular or diesel gas."
 format:
   html:
     code-tools: true
@@ -22,6 +22,7 @@ execute:
 #| label: load-pkgs
 #| message: false
 library(tidyverse)
+library(dplyr)
 ```
 
 ## Dataset
@@ -29,16 +30,35 @@ library(tidyverse)
 ```{r}
 #| label: load-dataset
 #| message: false
+weekly_gas_prices <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-07-01/weekly_gas_prices.csv')
+# code source: https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-07-01/readme.md
+
+glimpse(weekly_gas_prices) #gets overview of data
+
 ```
 
-A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
+This dataset was taken from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025. I mainly chose this data set because I wanted to explore some of the peaks of previous spikes in gas prices, especially with the volatility of gas prices so far in 2026.
 
-Make sure to load the data and use inline code for some of this information.
+From the TidyTuesday README: "The data comes from the U.S. Energy Information Administration (EIA), which publishes average retail gasoline and diesel prices each Monday." The original data can be found at [Gasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)](https://www.eia.gov/petroleum/gasdiesel/ "https://www.eia.gov/petroleum/gasdiesel/")
 
 ## Questions
 
-The two questions you want to answer.
+Are sudden spikes in gas prices common, or do prices rise at a relatively constant rate?
+
+Are there differences in volatility of prices between regular and diesel?
 
 ## Analysis plan
 
-- A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
+- For the first question, I will just look at regular gas prices. Also, to make it consistent over time, I will look at "regular" grade and "all" formulation. I will add two new variables to calculate the change in price from the previous week and the percent change in order to visualize trends in "spikes."
+-  For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the "fuel" variable, selecting "gasoline" and "diesel"
+
+| Task | Status | Due | Priority | Summary |
+|----|----|----|----|----|
+| Review TidyTuesday data sets and select one | Complete | 31 May | Medium |  |
+| Complete Project Proposal for Peer Review | Complete | 4 June | High |  |
+| Submit Revised Proposal | Pending peer review | 9 June | Medium |  |
+| Develop Question 1 answers | Ongoing | 14 June | Medium |  |
+| Develop Question 2 answers | Ongoing | 21 June | Medium |  |
+| Write final write up | Pending presentation completion | 26 June | Medium |  |
+| Record presentation | Pending presentation completeion | 28 June | Medium |  |
+| Submit final write up and presentation | Pending peer review | 30 June | High |  |
