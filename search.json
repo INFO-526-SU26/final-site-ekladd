@@ -1,0 +1,198 @@
+[
+  {
+    "objectID": "proposal.html",
+    "href": "proposal.html",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "",
+    "text": "library(tidyverse)\nlibrary(dplyr)"
+  },
+  {
+    "objectID": "proposal.html#dataset",
+    "href": "proposal.html#dataset",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Dataset",
+    "text": "Dataset\n\nweekly_gas_prices &lt;- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-07-01/weekly_gas_prices.csv')\n# code source: https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-07-01/readme.md\n\nglimpse(weekly_gas_prices) #gets overview of data\n\nRows: 22,360\nColumns: 5\n$ date        &lt;date&gt; 1990-08-20, 1990-08-20, 1990-08-27, 1990-08-27, 1990-09-0…\n$ fuel        &lt;chr&gt; \"gasoline\", \"gasoline\", \"gasoline\", \"gasoline\", \"gasoline\"…\n$ grade       &lt;chr&gt; \"regular\", \"regular\", \"regular\", \"regular\", \"regular\", \"re…\n$ formulation &lt;chr&gt; \"all\", \"conventional\", \"all\", \"conventional\", \"all\", \"conv…\n$ price       &lt;dbl&gt; 1.191, 1.191, 1.245, 1.245, 1.242, 1.242, 1.252, 1.252, 1.…\n\n\nThis dataset was taken from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025. I mainly chose this data set because I wanted to explore some of the peaks of previous spikes in gas prices, especially with the volatility of gas prices so far in 2026.\nFrom the TidyTuesday README: “The data comes from the U.S. Energy Information Administration (EIA), which publishes average retail gasoline and diesel prices each Monday.” The original data can be found at Gasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)"
+  },
+  {
+    "objectID": "proposal.html#questions",
+    "href": "proposal.html#questions",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Questions",
+    "text": "Questions\nAre sudden spikes in gas prices common, or do prices rise at a relatively constant rate?\n*OLD* Are there differences in volatility of prices between regular and diesel?\nUPDATE: Does stock market uncertainty coincide with increased gas prices?"
+  },
+  {
+    "objectID": "proposal.html#analysis-plan",
+    "href": "proposal.html#analysis-plan",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Analysis plan",
+    "text": "Analysis plan\n\nFor the first question, I will only look at regular gas prices. Also, to make it consistent over time, I will look at “regular” grade and “all” formulation. I will add two new variables to calculate the change in price from the previous week and the percent change in order to visualize trends in “spikes.”\n\nTo determine what I will consider a “spike”, I will look at the top 1%, 5%, and 10%.percent weekly increases.\nI will create two different visualizations. I will create a histogram to see how common “spikes” are. I will also create a time series to show when these “spikes occur”\n*UPDATE: BONUS Question 3: If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.\n\nOLD QUESTION: For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the “fuel” variable, selecting “gasoline” and “diesel”\n\nFor this visualization I will use a rolling standard deviation.\n\n*UDPATE: New question: to ensure I am using different variables, I will compare the volatility in gas prices to the stock market.\n\nI will still plan to use a rolling standard deviation\n\n\n\n\n\n\n\n\n\n\n\n\nTask\nStatus\nDue\nPriority\nSummary\n\n\n\n\nReview TidyTuesday data sets and select one\nComplete\n31 May\nMedium\n\n\n\nComplete Project Proposal for Peer Review\nComplete\n4 June\nHigh\n\n\n\nSubmit Revised Proposal\nComplete\n16 June\nMedium\n\n\n\nDevelop Question 1 answers\nComplete\n19 June\nMedium\n\n\n\nDevelop Question 2 answers\nComplete\n22 June\nMedium\nChanged question to respond to feedback\n\n\nWrite final write up\nComplete\n26 June\nMedium\n\n\n\nRecord presentation\nComplete\n28 June\nMedium\n\n\n\nSubmit final write up and presentation\nComplete\n2 July\nHigh"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "",
+    "text": "This project will look at a dataset containing weekly gas prices in the U.S. to determine how common sudden price increases are and if there are any external trends that coincide with spikes (stock market or geopolitical events)."
+  },
+  {
+    "objectID": "index.html#abstract",
+    "href": "index.html#abstract",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "",
+    "text": "This project will look at a dataset containing weekly gas prices in the U.S. to determine how common sudden price increases are and if there are any external trends that coincide with spikes (stock market or geopolitical events)."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Introduction",
+    "text": "Introduction\nGas prices surged above $4/gallon nationwide in spring 2026, the highest levels since 2022. Geopolitical events and supply disruptions (particularly conflict affecting Middle East oil supplies and the Strait of Hormuz) triggered rapid week-to-week swings in crude oil and gasoline prices.\nThis raises an interesting question: How unusual are large gasoline price spikes, and are there common economic or geopolitical trends that coincide with any spikes that occur?\nThe dataset is from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025."
+  },
+  {
+    "objectID": "index.html#question-1-are-sudden-spikes-in-gas-prices-common",
+    "href": "index.html#question-1-are-sudden-spikes-in-gas-prices-common",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Question 1: Are sudden spikes in gas prices common?",
+    "text": "Question 1: Are sudden spikes in gas prices common?\n\nIntroduction:\nThis question allows me to determine how frequently spikes like the ones we have experienced in the spring of 2026 have occurred historically. It will not deep dive into when the spikes occur yet, but to address feedback from my proposal, it will have a part B to define a spike and I will show a basic time series to show if spikes happen around each other or if they are spread out over time. For the histogram, I will use the weekly change in price variable. For the time series, I will use the date and the weekly change as well as the “spike_level”.\n\n\nApproach:\nI am looking to see how frequent big changes from week to week are. A histogram would be the best to visualize that. If they are common, I would expect a skew to the right.\nIn addition to seeing if a spike from one week to the next is common, I want to see if spikes occur around the same time period or if they are spread out, for that I will plot a time series line graph.\nIn order to address feedback from my proposal, I want to highlight what is considered a spike. First I will need to calculate those percentages. To plot, I have two options:\n\nI could add a vertical line on the histogram where the Top 1, 5 and 10% changes occur.\nI could differentiate the spikes using colors and sizes on the time series plot (I chose to go with this option because I thought it would be more interesting.\n\n\n\nAnalysis\nI will need to do some data cleaning and manipulation first. First, filter the data to avoid counting the same week multiple times.\nThen calculate the weekly change and add a column.\nFinally, calculate the top 1, 5 and 10% changes and add a column to determine if it is considered a spike.\nThen plot the histogram with weekly_change on the x axis\n\n\n\n\n\n\n\n\n\nThen plot the time series plot with a line and add points for the spikes\n\n\n\n\n\n\n\n\n\n\n\nDiscussion\nWeek to week spikes were not common from 1990 to 2025. For, the few spikes that did occur (top 1%), they mainly occurred around clusters of general upward trends."
+  },
+  {
+    "objectID": "index.html#question-2-does-stock-market-uncertainty-coincide-with-increased-gas-prices",
+    "href": "index.html#question-2-does-stock-market-uncertainty-coincide-with-increased-gas-prices",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Question 2: Does stock market uncertainty coincide with increased gas prices?",
+    "text": "Question 2: Does stock market uncertainty coincide with increased gas prices?\n\nIntroduction:\nThis question starts to explore potential explanations for the gas spikes. If the gas price trend follows the stock market trend, then it would be reasonable to suggest that the gas prices generally spike when there is confidence in all economic activity, but if it deviates, there might be influences other than financial markets to explore. I will need to read in stock market data as well as calculate gas price volitility from the prices in the data set. I will also need the week dates.\nNote: I did update this question from my proposal. My proposal asked if there were differences in gasoline and diesel. I received feedback that I should make sure to use different variables. So instead of using the same gasoline data, I added the stock market for comparison.\n\n\nApproach:\nIn order to compare the trends over time, a time series plot would be the most appropriate. One trick to this comparison is being able to scale the data. The stock market prices are significantly higher than the gas prices, so to be able to adequately compare them, I first needed to scale them.\n\n\nAnalysis\nI will need to do some data cleaning and manipulation first.\nFirst, clean the data to match the gas price data and group by weeks and get the mean.\nThen calculate the gas volatility and join with the VIX data, then scale to compare.\nThen plot the lines over time\n\n\n\n\n\n\n\n\n\n\n\nDiscussion\nThere are some instances when volatility in gas prices coincides with volatility in the stock market. But there are other instances where they behave opposite of one another. They follow similar patterns, but the relationship is not strong."
+  },
+  {
+    "objectID": "index.html#bonus-question-3-are-sudden-spikes-in-gas-prices-common",
+    "href": "index.html#bonus-question-3-are-sudden-spikes-in-gas-prices-common",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Bonus Question 3: Are sudden spikes in gas prices common?",
+    "text": "Bonus Question 3: Are sudden spikes in gas prices common?\n\nIntroduction:\nThe peer feedback from my proposal recommended that I add call outs for specific world events that happen around the spikes. I didn’t want this data to clutter my other graphs. Plus I didn’t think that it helped answer my other questions, but especially after an unsatisfying answer to question 2, I wanted to at least briefly explore the visualizations of specific spikes as a bonus plot.\n\n\nMethod\nFirst, filter to find the top 1% to get an idea of when the top 1% of spikes occurred to guide research.\nUsed ChatGPT to create a data set of global events that could impact gas prices.\nCreate windows based on each event and plot facets of the time series"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This project was developed by Elizabeth Ladd For INFO 526 - Data Analysis and Visualization at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members."
+  },
+  {
+    "objectID": "presentation.html#why-study-gas-price-volatility",
+    "href": "presentation.html#why-study-gas-price-volatility",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Why Study Gas Price Volatility?",
+    "text": "Why Study Gas Price Volatility?\n\nGas prices surged above $4/gallon nationwide in spring 2026, the highest levels since 2022.1\nGeopolitical events and supply disruptions (particularly conflict affecting Middle East oil supplies and the Strait of Hormuz) triggered rapid week-to-week swings in crude oil and gasoline prices.\nThis raises an interesting question: How unusual are large gasoline price spikes, and how has price volatility changed over the past 35 years?\n\nSource: Gas prices hit $4 a gallon; Kuwaiti tanker struck off Dubai - The Washington Post"
+  },
+  {
+    "objectID": "presentation.html#historical-dataset",
+    "href": "presentation.html#historical-dataset",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Historical Dataset",
+    "text": "Historical Dataset\n\nThe dataset is from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025.\n“The data comes from the U.S. Energy Information Administration (EIA), which publishes average retail gasoline and diesel prices each Monday.”1\n\nSource: Gasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)"
+  },
+  {
+    "objectID": "presentation.html#data",
+    "href": "presentation.html#data",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data",
+    "text": "Data\nThe raw data from TidyTuesday has multiple rows for each week for fuel type (gasoline/diesel), grade (regular, premium, etc) and formulation (conventional, all)\n\n\n\n\n\ndate\nfuel\ngrade\nformulation\nprice\n\n\n\n\n1990-08-20\ngasoline\nregular\nall\n1.191\n\n\n1990-08-20\ngasoline\nregular\nconventional\n1.191\n\n\n1990-08-27\ngasoline\nregular\nall\n1.245\n\n\n1990-08-27\ngasoline\nregular\nconventional\n1.245\n\n\n1990-09-03\ngasoline\nregular\nall\n1.242\n\n\n1990-09-03\ngasoline\nregular\nconventional\n1.242"
+  },
+  {
+    "objectID": "presentation.html#data-manipulation-filter",
+    "href": "presentation.html#data-manipulation-filter",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Manipulation: Filter",
+    "text": "Data Manipulation: Filter\nFirst, filter the data to avoid counting the same week multiple times.\n\n\nRows: 1,813\nColumns: 5\n$ date        &lt;date&gt; 1990-08-20, 1990-08-27, 1990-09-03, 1990-09-10, 1990-09-1…\n$ fuel        &lt;chr&gt; \"gasoline\", \"gasoline\", \"gasoline\", \"gasoline\", \"gasoline\"…\n$ grade       &lt;chr&gt; \"regular\", \"regular\", \"regular\", \"regular\", \"regular\", \"re…\n$ formulation &lt;chr&gt; \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", \"a…\n$ price       &lt;dbl&gt; 1.191, 1.245, 1.242, 1.252, 1.266, 1.272, 1.321, 1.333, 1.…"
+  },
+  {
+    "objectID": "presentation.html#data-manipulation-weekly-change-calculation",
+    "href": "presentation.html#data-manipulation-weekly-change-calculation",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Manipulation: Weekly Change Calculation",
+    "text": "Data Manipulation: Weekly Change Calculation\nThen calculate the weekly change and add a column.\n\n\nRows: 1,812\nColumns: 7\n$ date          &lt;date&gt; 1990-08-27, 1990-09-03, 1990-09-10, 1990-09-17, 1990-09…\n$ fuel          &lt;chr&gt; \"gasoline\", \"gasoline\", \"gasoline\", \"gasoline\", \"gasolin…\n$ grade         &lt;chr&gt; \"regular\", \"regular\", \"regular\", \"regular\", \"regular\", \"…\n$ formulation   &lt;chr&gt; \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", \"all\", …\n$ price         &lt;dbl&gt; 1.245, 1.242, 1.252, 1.266, 1.272, 1.321, 1.333, 1.339, …\n$ weekly_change &lt;dbl&gt; 0.054, -0.003, 0.010, 0.014, 0.006, 0.049, 0.012, 0.006,…\n$ pct_change    &lt;dbl&gt; 4.5340050, -0.2409639, 0.8051530, 1.1182109, 0.4739336, …"
+  },
+  {
+    "objectID": "presentation.html#histogram-plot",
+    "href": "presentation.html#histogram-plot",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Histogram Plot",
+    "text": "Histogram Plot"
+  },
+  {
+    "objectID": "presentation.html#data-manipulation-spike-determination",
+    "href": "presentation.html#data-manipulation-spike-determination",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Manipulation: Spike Determination",
+    "text": "Data Manipulation: Spike Determination\nFinally, calculate the top 1, 5 and 10% changes and add a column to determine if it is considered a spike.\nResult:\n\n\n\n Top 1%  Top 5% Top 10%  Normal \n     18      67      94    1633"
+  },
+  {
+    "objectID": "presentation.html#spike-highlight-on-time-series-plot",
+    "href": "presentation.html#spike-highlight-on-time-series-plot",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Spike Highlight on Time Series Plot",
+    "text": "Spike Highlight on Time Series Plot"
+  },
+  {
+    "objectID": "presentation.html#data-mining-stock-market",
+    "href": "presentation.html#data-mining-stock-market",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Mining: Stock Market",
+    "text": "Data Mining: Stock Market\nUtilize the Volatility Index VIX from Cboe\n\n\n\n\n\nDATE\nOPEN\nHIGH\nLOW\nCLOSE\n\n\n\n\n01/02/1990\n17.24\n17.24\n17.24\n17.24\n\n\n01/03/1990\n18.19\n18.19\n18.19\n18.19\n\n\n01/04/1990\n19.22\n19.22\n19.22\n19.22\n\n\n01/05/1990\n20.11\n20.11\n20.11\n20.11\n\n\n01/08/1990\n20.26\n20.26\n20.26\n20.26\n\n\n01/09/1990\n22.20\n22.20\n22.20\n22.20"
+  },
+  {
+    "objectID": "presentation.html#data-manipulation-stock-market",
+    "href": "presentation.html#data-manipulation-stock-market",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Manipulation: Stock Market",
+    "text": "Data Manipulation: Stock Market\nThen clean the data to match the gas price data and group by weeks and get the mean\n\n\n\n\n\nweek\nvix\n\n\n\n\n1990-01-01\n18.690\n\n\n1990-01-08\n21.918\n\n\n1990-01-15\n24.304\n\n\n1990-01-22\n25.744\n\n\n1990-01-29\n25.648\n\n\n1990-02-05\n24.196"
+  },
+  {
+    "objectID": "presentation.html#data-manipulation-gas-price-volatility-and-scaling",
+    "href": "presentation.html#data-manipulation-gas-price-volatility-and-scaling",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data Manipulation: Gas Price Volatility and Scaling",
+    "text": "Data Manipulation: Gas Price Volatility and Scaling\nThen calculate the gas volatility and join with the VIX data, then scale to compare.\n\n\n\n\n\nweek\ngas_volatility\nvix\nvix_scaled\ngas_vol_scaled\n\n\n\n\n1991-03-25\n2.922531\n16.625\n-0.3523634\n1.515299\n\n\n1991-04-01\n2.869525\n17.614\n-0.2248841\n1.451922\n\n\n1991-04-08\n2.712100\n18.590\n-0.0990805\n1.263691\n\n\n1991-04-15\n2.716475\n15.946\n-0.4398846\n1.268923\n\n\n1991-04-22\n2.748728\n16.988\n-0.3055737\n1.307486\n\n\n1991-04-29\n2.752816\n17.808\n-0.1998781\n1.312374"
+  },
+  {
+    "objectID": "presentation.html#plot",
+    "href": "presentation.html#plot",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Plot",
+    "text": "Plot"
+  },
+  {
+    "objectID": "presentation.html#data-1-filter",
+    "href": "presentation.html#data-1-filter",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data: 1% Filter",
+    "text": "Data: 1% Filter\nFirst, filter to find the top 1% to get an idea of when the top 1% of spikes occurred to guide research.\n\n\n\n\n\ndate\npct_change\nspike_level\n\n\n\n\n2005-08-15\n7.685811\nTop 1%\n\n\n2005-09-05\n17.586207\nTop 1%\n\n\n2006-03-20\n5.832629\nTop 1%\n\n\n2007-11-05\n4.909471\nTop 1%\n\n\n2008-05-26\n3.851227\nTop 1%\n\n\n2008-09-15\n5.126097\nTop 1%"
+  },
+  {
+    "objectID": "presentation.html#data-global-events",
+    "href": "presentation.html#data-global-events",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Data: Global Events",
+    "text": "Data: Global Events\nCreate a data set of global events that could impact gas prices.\n\n\n\n\n\nevent_date\nevent\ntype\n\n\n\n\n2001-09-11\n9/11 attacks\nGeopolitical\n\n\n2003-03-20\nVenezuelan general strikes\nSupply/Demand\n\n\n2003-03-20\nIraq War begins\nGeopolitical\n\n\n2005-08-29\nHurricane Katrina\nWeather/Supply\n\n\n2008-07-01\nOil price shock\nMarket\n\n\n2010-12-18\nArab Spring begins\nGeopolitical"
+  },
+  {
+    "objectID": "presentation.html#plot-1",
+    "href": "presentation.html#plot-1",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Plot",
+    "text": "Plot"
+  },
+  {
+    "objectID": "presentation.html#conclusions",
+    "href": "presentation.html#conclusions",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "Conclusions",
+    "text": "Conclusions\n\nQuestion 1: Are sudden spikes in gas prices common?\n\nConclusion: No, no change from week to week is the most common, with only a small percentage falling in the “spike” category.\n\nQuestion 2: Does stock market uncertainty coincide with increased gas prices?\n\nConclusion: There are some instances when volatility in gas prices coincides with volatility in the stock market. But there are other instances where they behave opposite of one another.\n\nBonus Question 3: Are gas price spikes associated with major geopolitical or supply-disruption events?\n\nConclusion: More analysis and data collection would be needed for a more definitive conclusion, but for a rough estimate shows that top 1% spikes occured within an 8 week window of Hurricane Katrina, the 2008 oil price shock and Russia invading Ukraine."
+  },
+  {
+    "objectID": "presentation.html#references",
+    "href": "presentation.html#references",
+    "title": "US Weekly Gas Price Volatility",
+    "section": "References",
+    "text": "References\n\nGas prices hit $4 a gallon; Kuwaiti tanker struck off Dubai - The Washington Post\nGasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)\nThe event data set was generated by providing chat GPT the following prompt: “Provide a list of global events that could impact US gas prices from 1990-2025 and the date they occurred”"
+  }
+]
