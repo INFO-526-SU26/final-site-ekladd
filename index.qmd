@@ -1,11 +1,11 @@
 ---
-title: "Project Title"
-subtitle: "INFO 526 - Summer 2024 - Final Project"
+title: "US Weekly Gas Price Volatility"
+subtitle: "INFO 526 - Summer 2026 - Final Project"
 author: 
-  - name: "Team name"
+  - name: "Elizabeth Ladd"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: "This project will look at a dataset containing weekly gas prices in the U.S. to determine how common sudden price increases are and if there are any external trends that coincide with spikes (stock market or geopolitical events)"
 format:
    html:
     code-tools: true
@@ -19,4 +19,346 @@ execute:
 
 ## Abstract
 
-Add project abstract here.
+This project will look at a dataset containing weekly gas prices in the U.S. to determine how common sudden price increases are and if there are any external trends that coincide with spikes (stock market or geopolitical events).
+
+## Introduction
+
+Gas prices surged above \$4/gallon nationwide in spring 2026, the highest levels since 2022. Geopolitical events and supply disruptions (particularly conflict affecting Middle East oil supplies and the Strait of Hormuz) triggered rapid week-to-week swings in crude oil and gasoline prices.
+
+This raises an interesting question: How unusual are large gasoline price spikes, and are there common economic or geopolitical trends that coincide with any spikes that occur?
+
+The dataset is from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025.
+
+```{r}
+#| label: setup
+#| include: false
+
+# Load packages here
+pacman::p_load(tidymodels,
+               tidyverse,
+               dplyr,
+               ggplot2,
+               lubridate,
+               ggrepel,
+               slider,
+               stringr)
+
+# Plot theme
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 11))
+
+# For better figure resolution
+knitr::opts_chunk$set(
+  fig.retina = 3, 
+  dpi = 300, 
+  fig.width = 6, 
+  fig.asp = 0.618 
+)
+
+# Load data here
+weekly_gas_prices <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-07-01/weekly_gas_prices.csv")
+# code source: https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-07-01/readme.md
+
+VIX_History <- read_csv("data/VIX_History.csv")
+# data source: https://www.cboe.com/tradable-products/vix/vix-historical-data/
+```
+
+## Question 1: Are sudden spikes in gas prices common?
+
+### Introduction: 
+
+This question allows me to determine how frequently spikes like the ones we have experienced in the spring of 2026 have occurred historically. It will not deep dive into when the spikes occur yet, but to address feedback from my proposal, it will have a part B to define a spike and I will show a basic time series to show if spikes happen around each other or if they are spread out over time. For the histogram, I will use the weekly change in price variable. For the time series, I will use the date and the weekly change as well as the "spike_level".
+
+### Approach: 
+
+I am looking to see how frequent big changes from week to week are. A histogram would be the best to visualize that. If they are common, I would expect a skew to the right.
+
+In addition to seeing if a spike from one week to the next is common, I want to see if spikes occur around the same time period or if they are spread out, for that I will plot a time series line graph.
+
+In order to address feedback from my proposal, I want to highlight what is considered a spike. First I will need to calculate those percentages. To plot, I have two options:
+
+- I could add a vertical line on the histogram where the Top 1, 5 and 10% changes occur.
+
+- I could differentiate the spikes using colors and sizes on the time series plot (I chose to go with this option because I thought it would be more interesting.
+
+### Analysis 
+
+I will need to do some data cleaning and manipulation first. First, filter the data to avoid counting the same week multiple times.
+
+```{r}
+#filters to avoid counting the same week multiple times  
+gas_filter <- weekly_gas_prices |>      
+  filter(     
+    fuel == "gasoline",          
+    grade == "regular",          
+    formulation == "all"        
+    ) |>     
+  arrange(date)
+```
+
+Then calculate the weekly change and add a column.
+
+```{r}
+#calculates weekly change
+gas_change <- gas_filter %>%
+  mutate(
+    weekly_change = price - lag(price),
+    pct_change = 100 * (price - lag(price)) / lag(price)
+  )
+
+# Remove the first row because there was no previous data for a change
+gas_change <- gas_change[-1, ]
+
+
+```
+
+Finally, calculate the top 1, 5 and 10% changes and add a column to determine if it is considered a spike.
+
+```{r}
+#adds column to determine if it is a spike week: top 1, 5 and 10%
+gas_change_spike <- gas_change |>
+  mutate(
+    percentile = percent_rank(weekly_change),
+    spike_level = case_when(
+      percentile >= 0.99 ~ "Top 1%",
+      percentile >= 0.95 ~ "Top 5%",
+      percentile >= 0.90 ~ "Top 10%",
+      TRUE ~ "Normal"
+    )
+  )
+
+#convert 'spike_level' to factor and specify level order
+gas_change_spike$spike_level <- 
+  factor(gas_change_spike$spike_level, 
+         levels=c('Top 1%' ,
+                  'Top 5%',
+                  'Top 10%',
+                  'Normal'
+         )
+  )
+
+```
+
+Then plot the histogram with weekly_change on the x axis
+
+```{r}
+#plots histogram
+ggplot(gas_change, aes(x = weekly_change)) +
+  geom_histogram(
+    binwidth = 0.02,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Weekly Gas Price Changes",
+    x = "Weekly Change ($)",
+    y = "Number of Weeks"
+  ) +
+  theme_minimal()
+```
+
+Then plot the time series plot with a line and add points for the spikes
+
+```{r}
+ggplot(gas_change_spike, aes(date, price)) +
+  geom_line() +
+  geom_point(
+    data = filter(gas_change_spike, spike_level != "Normal"),
+    aes(
+      color = spike_level,
+      size = spike_level)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Top 1%" = "red",
+      "Top 5%" = "orange",
+      "Top 10%" = "gold"
+    ), 
+    name = "Spike Level"
+  )+
+  scale_size_manual(
+    values = c(
+      "Top 10%" = 2,
+      "Top 5%" = 3,
+      "Top 1%" = 4
+    ),
+    guide = "none"
+  )+
+  labs(
+    title = "Gas Prices with Major Weekly Spikes Highlighted",
+    x = "Date",
+    y = "Price",
+  ) +
+  theme_minimal()
+
+```
+
+### Discussion
+
+Week to week spikes were not common from 1990 to 2025. For, the few spikes that did occur (top 1%), they mainly occurred around clusters of general upward trends.
+
+## Question 2: Does stock market uncertainty coincide with increased gas prices?
+
+### Introduction: 
+
+This question starts to explore potential explanations for the gas spikes. If the gas price trend follows the stock market trend, then it would be reasonable to suggest that the gas prices generally spike when there is confidence in all economic activity, but if it deviates, there might be influences other than financial markets to explore. I will need to read in stock market data as well as calculate gas price volitility from the prices in the data set. I will also need the week dates.
+
+Note: I did update this question from my proposal. My proposal asked if there were differences in gasoline and diesel. I received feedback that I should make sure to use different variables. So instead of using the same gasoline data, I added the stock market for comparison.
+
+### Approach: 
+
+In order to compare the trends over time, a time series plot would be the most appropriate. One trick to this comparison is being able to scale the data. The stock market prices are significantly higher than the gas prices, so to be able to adequately compare them, I first needed to scale them.
+
+### Analysis 
+
+I will need to do some data cleaning and manipulation first.
+
+First, clean the data to match the gas price data and group by weeks and get the mean.
+
+```{r}
+#clean VIX Data: change to lowercase, makes dates in right format and selects just the data and close columns
+vix_clean <- VIX_History |>
+  rename_with(tolower) |>
+  mutate(
+    date = mdy(date)
+  ) |>
+  select(date, vix = close)
+
+#converts vix data from daily data to weekly means to match the gas
+vix_weekly <- vix_clean %>%
+  mutate(week = floor_date(date, unit = "week", week_start = 1)) |>
+  group_by(week) |>
+  summarize(
+    vix = mean(vix, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+Then calculate the gas volatility and join with the VIX data, then scale to compare.
+
+```{r}
+gas_weekly <- gas_filter |>
+  mutate(
+    week = floor_date(date, unit = "week", week_start = 1),
+    pct_change = 100 * (price - lag(price)) / lag(price)
+  )
+
+#calculates volitility to match VIX
+gas_weekly <- gas_weekly |>
+  mutate(
+    gas_volatility = slide_dbl(
+      pct_change,
+      sd,
+      .before = 25,
+      .complete = TRUE,
+      na.rm = TRUE
+    )
+  )
+
+#joins together
+gas_vix_join <- gas_weekly|>
+  inner_join(vix_weekly, by = "week") |>
+  filter(!is.na(gas_volatility))
+
+
+gas_vix_scaled <- gas_vix_join |>
+  mutate(
+    vix_scaled = as.numeric(scale(vix)),
+    gas_vol_scaled = as.numeric(scale(gas_volatility))
+  )
+
+gas_vix_scaled <-  gas_vix_scaled |>
+  select(week, gas_volatility, vix, vix_scaled, gas_vol_scaled)
+```
+
+Then plot the lines over time
+
+```{r}
+ggplot(gas_vix_scaled, aes(x = week)) +
+  geom_line(aes(y = vix_scaled, color = "Stock Market Volatility")) +
+  geom_line(aes(y = gas_vol_scaled, color = "Gasoline Volatility")) +
+  labs(
+    title = "Stock Market and Gasoline Price Volatility Over Time",
+    x = NULL,
+    y = "Standardized value",
+    color = NULL
+  ) +
+  theme_minimal()
+```
+
+### Discussion
+
+There are some instances when volatility in gas prices coincides with volatility in the stock market. But there are other instances where they behave opposite of one another. They follow similar patterns, but the relationship is not strong.
+
+## Bonus Question 3: Are sudden spikes in gas prices common?
+
+### Introduction: 
+
+The peer feedback from my proposal recommended that I add call outs for specific world events that happen around the spikes. I didn't want this data to clutter my other graphs. Plus I didn't think that it helped answer my other questions, but especially after an unsatisfying answer to question 2, I wanted to at least briefly explore the visualizations of specific spikes as a bonus plot.
+
+### Method
+
+First, filter to find the top 1% to get an idea of when the top 1% of spikes occurred to guide research.
+
+```{r}
+#filters to find the top 1%
+top_one_filter <- gas_change_spike |>   
+  filter(spike_level == "Top 1%") |>
+  select(date, pct_change, spike_level)
+
+```
+
+Used ChatGPT to create a data set of global events that could impact gas prices.
+
+```{r}
+events <- tribble(
+  ~event_date, ~event, ~type,
+  "2001-09-11", "9/11 attacks", "Geopolitical",
+  "2003-03-20", "Venezuelan general strikes", "Supply/Demand",
+  "2003-03-20", "Iraq War begins", "Geopolitical",
+  "2005-08-29", "Hurricane Katrina", "Weather/Supply",
+  "2008-07-01", "Oil price shock", "Market",
+  "2010-12-18", "Arab Spring begins", "Geopolitical",
+  "2020-03-13", "COVID declared", "Supply/Demand",
+  "2021-03-23", "Suez Canal blockage", "Supply/Demand",
+  "2022-02-24", "Russia invades Ukraine", "Geopolitical"
+) |>
+  mutate(event_date = as.Date(event_date))
+```
+
+Create windows based on each event and plot facets of the time series
+
+```{r}
+event_windows <- gas_change_spike |>
+  crossing(events) |>
+  filter(
+    date >= event_date - weeks(8),
+    date <= event_date + weeks(8)
+  ) |>
+  mutate(
+    weeks_from_event = as.numeric(difftime(date, event_date, units = "weeks")),
+    event = str_wrap(event, width = 15)
+  )
+
+ggplot(event_windows, aes(x = weeks_from_event, y = pct_change)) +
+  geom_hline(yintercept = 0, color = "grey50") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_line() +
+  geom_point(aes(color = spike_level), size = 2) +
+  facet_wrap(~ event, scales = "free_y") +
+  scale_color_manual(
+    values = c(
+      "Normal" = "grey70",
+      "Top 10%" = "gold",
+      "Top 5%" = "orange",
+      "Top 1%" = "red"
+    )
+  ) +
+  labs(
+    title = "Gasoline Price Changes Around Major Events",
+    subtitle = "Eight weeks before and after each event",
+    x = "Weeks from event",
+    y = "Weekly percent change",
+    color = "Spike level"
+  ) +
+  theme_minimal()
+```
