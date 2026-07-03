@@ -61,7 +61,7 @@ Are sudden spikes in gas prices common, or do prices rise at a relatively consta
   - I will still plan to use a rolling standard deviation
 
 | Task | Status | Due | Priority | Summary |
-|---------------|---------------|---------------|---------------|---------------|
+|----|----|----|----|----|
 | Review TidyTuesday data sets and select one | Complete | 31 May | Medium |  |
 | Complete Project Proposal for Peer Review | Complete | 4 June | High |  |
 | Submit Revised Proposal | Complete | 16 June | Medium |  |
