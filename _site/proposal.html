@@ -4332,7 +4332,8 @@ $ price       &lt;dbl&gt; 1.191, 1.191, 1.245, 1.245, 1.242, 1.242, 1.252, 1.252
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
 <p>Are sudden spikes in gas prices common, or do prices rise at a relatively constant rate?</p>
-<p>Are there differences in volatility of prices between regular and diesel?</p>
+<p><strong><em>*OLD</em>*</strong> Are there differences in volatility of prices between regular and diesel?</p>
+<p><strong><em>UPDATE:</em></strong> Does stock market uncertainty coincide with increased gas prices?</p>
 </section>
 <section id="analysis-plan" class="level2">
 <h2 class="anchored" data-anchor-id="analysis-plan">Analysis plan</h2>
@@ -4341,11 +4342,15 @@ $ price       &lt;dbl&gt; 1.191, 1.191, 1.245, 1.245, 1.242, 1.242, 1.252, 1.252
 <ul>
 <li>To determine what I will consider a “spike”, I will look at the top 1%, 5%, and 10%.percent weekly increases.</li>
 <li>I will create two different visualizations. I will create a histogram to see how common “spikes” are. I will also create a time series to show when these “spikes occur”</li>
-<li>If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.</li>
+<li><strong>*UPDATE:</strong> <strong>BONUS Question 3</strong>: If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.</li>
 </ul></li>
-<li>For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the “fuel” variable, selecting “gasoline” and “diesel”
+<li><strong>OLD QUESTION</strong>: For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the “fuel” variable, selecting “gasoline” and “diesel”
 <ul>
 <li>For this visualization I will use a rolling standard deviation.</li>
+</ul></li>
+<li><strong>*UDPATE: New question</strong>: to ensure I am using different variables, I will compare the volatility in gas prices to the stock market.
+<ul>
+<li>I will still plan to use a rolling standard deviation</li>
 </ul></li>
 </ul>
 <table class="caption-top table">
@@ -4389,36 +4394,36 @@ $ price       &lt;dbl&gt; 1.191, 1.191, 1.245, 1.245, 1.242, 1.242, 1.252, 1.252
 </tr>
 <tr class="even">
 <td>Develop Question 1 answers</td>
-<td>Ongoing</td>
+<td>Complete</td>
 <td>19 June</td>
 <td>Medium</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>Develop Question 2 answers</td>
-<td>Ongoing</td>
+<td>Complete</td>
 <td>22 June</td>
 <td>Medium</td>
-<td></td>
+<td>Changed question to respond to feedback</td>
 </tr>
 <tr class="even">
 <td>Write final write up</td>
-<td>Pending presentation completion</td>
+<td>Complete</td>
 <td>26 June</td>
 <td>Medium</td>
 <td></td>
 </tr>
 <tr class="odd">
 <td>Record presentation</td>
-<td>Pending presentation completion</td>
+<td>Complete</td>
 <td>28 June</td>
 <td>Medium</td>
 <td></td>
 </tr>
 <tr class="even">
 <td>Submit final write up and presentation</td>
-<td>Pending presentation completion</td>
-<td>30 June</td>
+<td>Complete</td>
+<td>2 July</td>
 <td>High</td>
 <td></td>
 </tr>
@@ -4981,27 +4986,31 @@ $ price       &lt;dbl&gt; 1.191, 1.191, 1.245, 1.245, 1.242, 1.242, 1.252, 1.252
 <span id="cb4-49"><a href="#cb4-49"></a></span>
 <span id="cb4-50"><a href="#cb4-50"></a>Are sudden spikes in gas prices common, or do prices rise at a relatively constant rate?</span>
 <span id="cb4-51"><a href="#cb4-51"></a></span>
-<span id="cb4-52"><a href="#cb4-52"></a>Are there differences in volatility of prices between regular and diesel?</span>
+<span id="cb4-52"><a href="#cb4-52"></a>***\*OLD*****\*** Are there differences in volatility of prices between regular and diesel?</span>
 <span id="cb4-53"><a href="#cb4-53"></a></span>
-<span id="cb4-54"><a href="#cb4-54"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a>***UPDATE:*** Does stock market uncertainty coincide with increased gas prices?</span>
 <span id="cb4-55"><a href="#cb4-55"></a></span>
-<span id="cb4-56"><a href="#cb4-56"></a><span class="ss">- </span>For the first question, I will only look at regular gas prices. Also, to make it consistent over time, I will look at &quot;regular&quot; grade and &quot;all&quot; formulation. I will add two new variables to calculate the change in price from the previous week and the percent change in order to visualize trends in &quot;spikes.&quot;</span>
-<span id="cb4-57"><a href="#cb4-57"></a><span class="ss">  - </span>To determine what I will consider a &quot;spike&quot;, I will look at the top 1%, 5%, and 10%.percent weekly increases.</span>
-<span id="cb4-58"><a href="#cb4-58"></a><span class="ss">  - </span>I will create two different visualizations. I will create a histogram to see how common &quot;spikes&quot; are. I will also create a time series to show when these &quot;spikes occur&quot;</span>
-<span id="cb4-59"><a href="#cb4-59"></a><span class="ss">  - </span>If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.</span>
-<span id="cb4-60"><a href="#cb4-60"></a><span class="ss">- </span>For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the &quot;fuel&quot; variable, selecting &quot;gasoline&quot; and &quot;diesel&quot;</span>
-<span id="cb4-61"><a href="#cb4-61"></a><span class="ss">  - </span>For this visualization I will use a rolling standard deviation.</span>
-<span id="cb4-62"><a href="#cb4-62"></a></span>
-<span id="cb4-63"><a href="#cb4-63"></a><span class="pp">|</span> Task <span class="pp">|</span> Status <span class="pp">|</span> Due <span class="pp">|</span> Priority <span class="pp">|</span> Summary <span class="pp">|</span></span>
-<span id="cb4-64"><a href="#cb4-64"></a><span class="pp">|---------------|---------------|---------------|---------------|---------------|</span></span>
-<span id="cb4-65"><a href="#cb4-65"></a><span class="pp">|</span> Review TidyTuesday data sets and select one <span class="pp">|</span> Complete <span class="pp">|</span> 31 May <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-66"><a href="#cb4-66"></a><span class="pp">|</span> Complete Project Proposal for Peer Review <span class="pp">|</span> Complete <span class="pp">|</span> 4 June <span class="pp">|</span> High <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-67"><a href="#cb4-67"></a><span class="pp">|</span> Submit Revised Proposal <span class="pp">|</span> Complete <span class="pp">|</span> 16 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-68"><a href="#cb4-68"></a><span class="pp">|</span> Develop Question 1 answers <span class="pp">|</span> Ongoing <span class="pp">|</span> 19 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-69"><a href="#cb4-69"></a><span class="pp">|</span> Develop Question 2 answers <span class="pp">|</span> Ongoing <span class="pp">|</span> 22 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-70"><a href="#cb4-70"></a><span class="pp">|</span> Write final write up <span class="pp">|</span> Pending presentation completion <span class="pp">|</span> 26 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-71"><a href="#cb4-71"></a><span class="pp">|</span> Record presentation <span class="pp">|</span> Pending presentation completion <span class="pp">|</span> 28 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
-<span id="cb4-72"><a href="#cb4-72"></a><span class="pp">|</span> Submit final write up and presentation <span class="pp">|</span> Pending presentation completion <span class="pp">|</span> 30 June <span class="pp">|</span> High <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a></span>
+<span id="cb4-58"><a href="#cb4-58"></a><span class="ss">- </span>For the first question, I will only look at regular gas prices. Also, to make it consistent over time, I will look at &quot;regular&quot; grade and &quot;all&quot; formulation. I will add two new variables to calculate the change in price from the previous week and the percent change in order to visualize trends in &quot;spikes.&quot;</span>
+<span id="cb4-59"><a href="#cb4-59"></a><span class="ss">  - </span>To determine what I will consider a &quot;spike&quot;, I will look at the top 1%, 5%, and 10%.percent weekly increases.</span>
+<span id="cb4-60"><a href="#cb4-60"></a><span class="ss">  - </span>I will create two different visualizations. I will create a histogram to see how common &quot;spikes&quot; are. I will also create a time series to show when these &quot;spikes occur&quot;</span>
+<span id="cb4-61"><a href="#cb4-61"></a><span class="ss">  - </span>**\*UPDATE:** **BONUS Question 3**: If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.</span>
+<span id="cb4-62"><a href="#cb4-62"></a><span class="ss">- </span>**OLD QUESTION**: For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the &quot;fuel&quot; variable, selecting &quot;gasoline&quot; and &quot;diesel&quot;</span>
+<span id="cb4-63"><a href="#cb4-63"></a><span class="ss">  - </span>For this visualization I will use a rolling standard deviation.</span>
+<span id="cb4-64"><a href="#cb4-64"></a><span class="ss">- </span>**\*UDPATE: New question**: to ensure I am using different variables, I will compare the volatility in gas prices to the stock market.</span>
+<span id="cb4-65"><a href="#cb4-65"></a><span class="ss">  - </span>I will still plan to use a rolling standard deviation</span>
+<span id="cb4-66"><a href="#cb4-66"></a></span>
+<span id="cb4-67"><a href="#cb4-67"></a><span class="pp">|</span> Task <span class="pp">|</span> Status <span class="pp">|</span> Due <span class="pp">|</span> Priority <span class="pp">|</span> Summary <span class="pp">|</span></span>
+<span id="cb4-68"><a href="#cb4-68"></a><span class="pp">|---------------|---------------|---------------|---------------|---------------|</span></span>
+<span id="cb4-69"><a href="#cb4-69"></a><span class="pp">|</span> Review TidyTuesday data sets and select one <span class="pp">|</span> Complete <span class="pp">|</span> 31 May <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-70"><a href="#cb4-70"></a><span class="pp">|</span> Complete Project Proposal for Peer Review <span class="pp">|</span> Complete <span class="pp">|</span> 4 June <span class="pp">|</span> High <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-71"><a href="#cb4-71"></a><span class="pp">|</span> Submit Revised Proposal <span class="pp">|</span> Complete <span class="pp">|</span> 16 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-72"><a href="#cb4-72"></a><span class="pp">|</span> Develop Question 1 answers <span class="pp">|</span> Complete <span class="pp">|</span> 19 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-73"><a href="#cb4-73"></a><span class="pp">|</span> Develop Question 2 answers <span class="pp">|</span> Complete <span class="pp">|</span> 22 June <span class="pp">|</span> Medium <span class="pp">|</span> Changed question to respond to feedback <span class="pp">|</span></span>
+<span id="cb4-74"><a href="#cb4-74"></a><span class="pp">|</span> Write final write up <span class="pp">|</span> Complete <span class="pp">|</span> 26 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-75"><a href="#cb4-75"></a><span class="pp">|</span> Record presentation <span class="pp">|</span> Complete <span class="pp">|</span> 28 June <span class="pp">|</span> Medium <span class="pp">|</span>  <span class="pp">|</span></span>
+<span id="cb4-76"><a href="#cb4-76"></a><span class="pp">|</span> Submit final write up and presentation <span class="pp">|</span> Complete <span class="pp">|</span> 2 July <span class="pp">|</span> High <span class="pp">|</span>  <span class="pp">|</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

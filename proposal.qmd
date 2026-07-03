@@ -45,24 +45,28 @@ From the TidyTuesday README: "The data comes from the U.S. Energy Information Ad
 
 Are sudden spikes in gas prices common, or do prices rise at a relatively constant rate?
 
-Are there differences in volatility of prices between regular and diesel?
+***\*OLD*****\*** Are there differences in volatility of prices between regular and diesel?
+
+***UPDATE:*** Does stock market uncertainty coincide with increased gas prices?
 
 ## Analysis plan
 
 - For the first question, I will only look at regular gas prices. Also, to make it consistent over time, I will look at "regular" grade and "all" formulation. I will add two new variables to calculate the change in price from the previous week and the percent change in order to visualize trends in "spikes."
   - To determine what I will consider a "spike", I will look at the top 1%, 5%, and 10%.percent weekly increases.
   - I will create two different visualizations. I will create a histogram to see how common "spikes" are. I will also create a time series to show when these "spikes occur"
-  - If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.
-- For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the "fuel" variable, selecting "gasoline" and "diesel"
+  - **\*UPDATE:** **BONUS Question 3**: If I discover a spike, I will research to see if there were any significant world events at the time and create captions for any siginificant stories.
+- **OLD QUESTION**: For the second question, I will need the percent change as in the first question, but I am more concerned with the movement in either direction, so I will use the absolute value of the change to measure volatility. I will need to compare the "fuel" variable, selecting "gasoline" and "diesel"
   - For this visualization I will use a rolling standard deviation.
+- **\*UDPATE: New question**: to ensure I am using different variables, I will compare the volatility in gas prices to the stock market.
+  - I will still plan to use a rolling standard deviation
 
 | Task | Status | Due | Priority | Summary |
 |---------------|---------------|---------------|---------------|---------------|
 | Review TidyTuesday data sets and select one | Complete | 31 May | Medium |  |
 | Complete Project Proposal for Peer Review | Complete | 4 June | High |  |
 | Submit Revised Proposal | Complete | 16 June | Medium |  |
-| Develop Question 1 answers | Ongoing | 19 June | Medium |  |
-| Develop Question 2 answers | Ongoing | 22 June | Medium |  |
-| Write final write up | Pending presentation completion | 26 June | Medium |  |
-| Record presentation | Pending presentation completion | 28 June | Medium |  |
-| Submit final write up and presentation | Pending presentation completion | 30 June | High |  |
+| Develop Question 1 answers | Complete | 19 June | Medium |  |
+| Develop Question 2 answers | Complete | 22 June | Medium | Changed question to respond to feedback |
+| Write final write up | Complete | 26 June | Medium |  |
+| Record presentation | Complete | 28 June | Medium |  |
+| Submit final write up and presentation | Complete | 2 July | High |  |
