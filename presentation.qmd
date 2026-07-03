@@ -1,7 +1,7 @@
 ---
-title: "Project title"
-subtitle: "INFO 526 - Summer 2024 - Final Project"
-author: "Author names"
+title: "US Weekly Gas Price Volatility"
+subtitle: "INFO 526 - Summer 2026 - Final Project"
+author: "Elizabeth Ladd"
 title-slide-attributes:
   data-background-image: images/watercolour_sys02_img34_teacup-ocean.jpg
   data-background-size: stretch
@@ -14,6 +14,7 @@ format:
 editor: visual
 execute:
   echo: false
+  warning: false
 ---
 
 ```{r}
@@ -22,7 +23,13 @@ execute:
 
 # Load packages here
 pacman::p_load(tidymodels,
-               tidyverse)
+               tidyverse,
+               dplyr,
+               ggplot2,
+               lubridate,
+               ggrepel,
+               slider,
+               stringr)
 
 ```
 
@@ -46,120 +53,378 @@ knitr::opts_chunk$set(
 #| label: load-data
 #| include: false
 # Load data here
-data(mtcars)
-mtcars$speed <- mtcars$hp / mtcars$wt
+weekly_gas_prices <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-07-01/weekly_gas_prices.csv")
+# code source: https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-07-01/readme.md
 
-data("penguins")
+VIX_History <- read_csv("data/VIX_History.csv")
+# data source: https://www.cboe.com/tradable-products/vix/vix-historical-data/
 ```
 
-# Using Quarto for presentations
+# Background
 
-## Quarto
+## **Why Study Gas Price Volatility?**
 
--   The presentation is created using the Quarto CLI
+- **Gas prices surged above \$4/gallon nationwide** in spring 2026, the highest levels since 2022.[^1]
 
--   `##` sets the start of a new slide
+- **Geopolitical events and supply disruptions** (particularly conflict affecting Middle East oil supplies and the Strait of Hormuz) triggered rapid week-to-week swings in crude oil and gasoline prices.
 
-## Layouts
+- This raises an interesting question: How unusual are large gasoline price spikes, and how has price volatility changed over the past 35 years?
 
-You can use plain text
+[^1]: Source: [Gas prices hit \$4 a gallon; Kuwaiti tanker struck off Dubai - The Washington Post](https://www.washingtonpost.com/business/2026/03/31/gas-prices-four-dollars/)
 
-::: columns
-::: {.column width="40%"}
--   or bullet points[^1]
-:::
+## Historical Dataset
 
-::: {.column width="60%"}
-or in two columns
-:::
-:::
+- The dataset is from the TidyTuesday github repo from 2025-07-01. It looks at the weekly US gas prices for both regular and diesel. The date range of this data set is from Aug 1990 to June 2025.
 
-[^1]: And add footnotes
+- "The data comes from the U.S. Energy Information Administration (EIA), which publishes average retail gasoline and diesel prices each Monday."[^2]
 
--   like
+[^2]: Source: [Gasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)](https://www.eia.gov/petroleum/gasdiesel/ "https://www.eia.gov/petroleum/gasdiesel/")
 
--   this
+## Data
 
-## Code
+The raw data from TidyTuesday has multiple rows for each week for fuel type (gasoline/diesel), grade (regular, premium, etc) and formulation (conventional, all)
 
 ```{r, echo=FALSE}
-model <- lm(mpg ~ speed, data = mtcars) 
-
-model |> tidy()
-
-model |> glance()
-
-```
-
-## Plots
-
-```{r}
-penguins |>
-  mutate(species = ifelse(species == "Adelie", "Adelie", "Other")) |>
-  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point()
-```
-
-## Plot and text
-
-::: columns
-::: {.column width="50%"}
--   Some text
-
--   goes here
-:::
-
-::: {.column width="50%"}
-```{r, warning=FALSE, fig.width=5.5}
-penguins |>
-  ggplot(aes(x = bill_length_mm, y = species, color = species)) +
-  geom_boxplot(linewidth = 0.75,
-               outlier.size = 2.5) +
-  theme_minimal(base_size = 15) +
-  theme(legend.key.size = unit(0.8, "cm"))
-```
-:::
-:::
-
-# A new section...
-
-## Tables
-
-If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
-
-```{r}
-penguins |> 
-  head() |>
-  kableExtra::kable() |>
+weekly_gas_prices |>    
+  head() |>   
+  kableExtra::kable() |>   
   kableExtra::kable_styling()
 ```
 
-## Images
+# Question 1: Are sudden spikes in gas prices common?
 
-![Image credit: Danielle Navarro, Percolate.](images/watercolour_sys02_img34_teacup-ocean.png){fig-align="center" width="500"}
+## Data Manipulation: Filter
 
-## Math Expressions {.smaller}
+First, filter the data to avoid counting the same week multiple times.
 
-You can write LaTeX math expressions inside a pair of dollar signs, e.g. \$\\alpha+\\beta\$ renders $\alpha + \beta$. You can use the display style with double dollar signs:
+```{r, echo=FALSE}
+#filters to avoid counting the same week multiple times
+gas_filter <- weekly_gas_prices %>%
+  filter(
+    fuel == "gasoline",
+    grade == "regular",
+    formulation == "all"
+  ) %>%
+  arrange(date)
 
-```         
-$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+gas_filter %>% glimpse()
+
 ```
 
-$$
-\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i
-$$
+## Data Manipulation: Weekly Change Calculation
 
-Limitations:
+Then calculate the weekly change and add a column.
 
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
+```{r, echo=FALSE}
 
-2.  There should not be spaces after the opening `$` or before the closing `$`.
+#calculates weekly change
+gas_change <- gas_filter %>%
+  mutate(
+    weekly_change = price - lag(price),
+    pct_change = 100 * (price - lag(price)) / lag(price)
+  )
 
-# Wrap up
+# Remove the first row because there was no previous data for a change
+gas_change <- gas_change[-1, ]
 
-## Feeling adventurous?
+glimpse(gas_change)
 
--   You are welcomed to use the default styling of the slides. In fact, that's what I expect majority of you will do. You will differentiate yourself with the content of your presentation.
+```
 
--   But some of you might want to play around with slide styling. Some solutions for this can be found at https://quarto.org/docs/presentations/revealjs.
+## Histogram Plot
+
+```{r, echo=FALSE}
+#plots histogram
+ggplot(gas_change, aes(x = weekly_change)) +
+  geom_histogram(
+    binwidth = 0.02,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Weekly Gas Price Changes",
+    x = "Weekly Change ($)",
+    y = "Number of Weeks"
+  ) +
+  theme_minimal()
+
+```
+
+## Data Manipulation: Spike Determination
+
+Finally, calculate the top 1, 5 and 10% changes and add a column to determine if it is considered a spike.
+
+Result:
+
+```{r, echo=FALSE}
+
+
+#adds column to determine if it is a spike week: top 1, 5 and 10%
+gas_change_spike <- gas_change |>
+  mutate(
+    percentile = percent_rank(weekly_change),
+    spike_level = case_when(
+      percentile >= 0.99 ~ "Top 1%",
+      percentile >= 0.95 ~ "Top 5%",
+      percentile >= 0.90 ~ "Top 10%",
+      TRUE ~ "Normal"
+    )
+  )
+
+#convert 'spike_level' to factor and specify level order
+gas_change_spike$spike_level <- 
+  factor(gas_change_spike$spike_level, 
+         levels=c('Top 1%' ,
+                  'Top 5%',
+                  'Top 10%',
+                  'Normal'
+         )
+  )
+
+table(gas_change_spike$spike_level)
+
+
+```
+
+## Spike Highlight on Time Series Plot
+
+```{r, echo=FALSE}
+
+ggplot(gas_change_spike, aes(date, price)) +
+  geom_line() +
+  geom_point(
+    data = filter(gas_change_spike, spike_level != "Normal"),
+    aes(
+      color = spike_level,
+      size = spike_level)
+  ) +
+  scale_color_manual(
+    values = c(
+      "Top 1%" = "red",
+      "Top 5%" = "orange",
+      "Top 10%" = "gold"
+    ), 
+    name = "Spike Level"
+  )+
+  scale_size_manual(
+    values = c(
+      "Top 10%" = 2,
+      "Top 5%" = 3,
+      "Top 1%" = 4
+    ),
+    guide = "none"
+  )+
+  labs(
+    title = "Gas Prices with Major Weekly Spikes Highlighted",
+    x = "Date",
+    y = "Price",
+  ) +
+  theme_minimal()
+
+```
+
+# Question 2: Does stock market uncertainty coincide with increased gas prices?
+
+## Data Mining: Stock Market
+
+Utilize the Volatility Index VIX from Cboe
+
+```{r, echo=FALSE}
+VIX_History |>    
+  head() |>   
+  kableExtra::kable() |>   
+  kableExtra::kable_styling()
+```
+
+## Data Manipulation: Stock Market
+
+Then clean the data to match the gas price data and group by weeks and get the mean
+
+```{r, echo=FALSE}
+
+#clean VIX Data: change to lowercase, makes dates in right format and selects just the data and close columns
+vix_clean <- VIX_History |>
+  rename_with(tolower) |>
+  mutate(
+    date = mdy(date)
+  ) |>
+  select(date, vix = close)
+
+#converts vix data from daily data to weekly means to match the gas
+vix_weekly <- vix_clean %>%
+  mutate(week = floor_date(date, unit = "week", week_start = 1)) |>
+  group_by(week) |>
+  summarize(
+    vix = mean(vix, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+vix_weekly |>
+  head() |>   
+  kableExtra::kable() |>   
+  kableExtra::kable_styling()
+
+```
+
+## Data Manipulation: Gas Price Volatility and Scaling
+
+Then calculate the gas volatility and join with the VIX data, then scale to compare.
+
+```{r, echo=FALSE}
+gas_weekly <- gas_filter |>
+  mutate(
+    week = floor_date(date, unit = "week", week_start = 1),
+    pct_change = 100 * (price - lag(price)) / lag(price)
+  )
+
+#calculates volitility to match VIX
+gas_weekly <- gas_weekly |>
+  mutate(
+    gas_volatility = slide_dbl(
+      pct_change,
+      sd,
+      .before = 25,
+      .complete = TRUE,
+      na.rm = TRUE
+    )
+  )
+
+#joins together
+gas_vix_join <- gas_weekly|>
+  inner_join(vix_weekly, by = "week") |>
+  filter(!is.na(gas_volatility))
+  
+ 
+gas_vix_scaled <- gas_vix_join |>
+  mutate(
+    vix_scaled = as.numeric(scale(vix)),
+    gas_vol_scaled = as.numeric(scale(gas_volatility))
+  )
+
+gas_vix_scaled <-  gas_vix_scaled |>
+  select(week, gas_volatility, vix, vix_scaled, gas_vol_scaled)
+
+gas_vix_scaled |>
+  head() |>   
+  kableExtra::kable() |>   
+  kableExtra::kable_styling()
+
+```
+
+## Plot
+
+```{r, echo=FALSE}
+ggplot(gas_vix_scaled, aes(x = week)) +
+  geom_line(aes(y = vix_scaled, color = "Stock Market Volatility")) +
+  geom_line(aes(y = gas_vol_scaled, color = "Gasoline Volatility")) +
+  labs(
+    title = "Stock Market and Gasoline Price Volatility Over Time",
+    x = NULL,
+    y = "Standardized value",
+    color = NULL
+  ) +
+  theme_minimal()
+```
+
+# Question 3: Are gas price spikes associated with major geopolitical or supply-disruption events?
+
+## Data: 1% Filter
+
+First, filter to find the top 1% to get an idea of when the top 1% of spikes occurred to guide research.
+
+```{r, echo=FALSE}
+#filters to find the top 1% 
+top_one_filter <- gas_change_spike |>   
+  filter(spike_level == "Top 1%") |>
+  select(date, pct_change, spike_level)
+         
+top_one_filter   |>
+  head() |>   
+  kableExtra::kable() |>   
+  kableExtra::kable_styling()
+```
+
+## Data: Global Events
+
+Create a data set of global events that could impact gas prices.
+
+```{r, echo=FALSE}
+events <- tribble(
+  ~event_date, ~event, ~type,
+  "2001-09-11", "9/11 attacks", "Geopolitical",
+  "2003-03-20", "Venezuelan general strikes", "Supply/Demand",
+  "2003-03-20", "Iraq War begins", "Geopolitical",
+  "2005-08-29", "Hurricane Katrina", "Weather/Supply",
+  "2008-07-01", "Oil price shock", "Market",
+  "2010-12-18", "Arab Spring begins", "Geopolitical",
+  "2020-03-13", "COVID declared", "Supply/Demand",
+  "2021-03-23", "Suez Canal blockage", "Supply/Demand",
+  "2022-02-24", "Russia invades Ukraine", "Geopolitical"
+) |>
+  mutate(event_date = as.Date(event_date))
+
+events   |>
+  head() |>   
+  kableExtra::kable() |>   
+  kableExtra::kable_styling()
+```
+
+## Plot
+
+```{r, echo=FALSE}
+event_windows <- gas_change_spike |>
+  crossing(events) |>
+  filter(
+    date >= event_date - weeks(8),
+    date <= event_date + weeks(8)
+  ) |>
+  mutate(
+    weeks_from_event = as.numeric(difftime(date, event_date, units = "weeks")),
+    event = str_wrap(event, width = 15)
+  )
+
+ggplot(event_windows, aes(x = weeks_from_event, y = pct_change)) +
+  geom_hline(yintercept = 0, color = "grey50") +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_line() +
+  geom_point(aes(color = spike_level), size = 2) +
+  facet_wrap(~ event, scales = "free_y") +
+  scale_color_manual(
+    values = c(
+      "Normal" = "grey70",
+      "Top 10%" = "gold",
+      "Top 5%" = "orange",
+      "Top 1%" = "red"
+    )
+  ) +
+  labs(
+    title = "Gasoline Price Changes Around Major Events",
+    subtitle = "Eight weeks before and after each event",
+    x = "Weeks from event",
+    y = "Weekly percent change",
+    color = "Spike level"
+  ) +
+  theme_minimal()
+```
+
+## **Conclusions**
+
+1.  Question 1: Are sudden spikes in gas prices common?
+
+    - Conclusion: No, no change from week to week is the most common, with only a small percentage falling in the "spike" category.
+
+2.  Question 2: Does stock market uncertainty coincide with increased gas prices?
+
+    - Conclusion: There are some instances when volatility in gas prices coincides with volatility in the stock market. But there are other instances where they behave opposite of one another.
+
+3.  Bonus Question 3: Are gas price spikes associated with major geopolitical or supply-disruption events?
+
+    - Conclusion: More analysis and data collection would be needed for a more definitive conclusion, but for a rough estimate shows that top 1% spikes occured within an 8 week window of Hurricane Katrina, the 2008 oil price shock and Russia invading Ukraine.
+
+## References
+
+1.  [Gas prices hit \$4 a gallon; Kuwaiti tanker struck off Dubai - The Washington Post](https://www.washingtonpost.com/business/2026/03/31/gas-prices-four-dollars/)
+
+2.  [Gasoline and Diesel Fuel Update - U.S. Energy Information Administration (EIA)](https://www.eia.gov/petroleum/gasdiesel/ "https://www.eia.gov/petroleum/gasdiesel/")
+
+3.  The event data set was generated by providing chat GPT the following prompt: "Provide a list of global events that could impact US gas prices from 1990-2025 and the date they occurred"
